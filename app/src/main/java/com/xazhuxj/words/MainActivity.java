@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Word word = new Word("Hi", "你好啊");
-                word.setId(20);
+                word.setId(140);
                 wordViewModel.updateWords(word);
             }
         });
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Word word = new Word("Hi", "你好啊");
-                word.setId(17);
+                word.setId(140);
                 wordViewModel.deleteWords(word);
             }
         });
