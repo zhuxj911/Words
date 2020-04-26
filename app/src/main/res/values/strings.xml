@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Words</string>
+    <string name="buttonInsert">Insert</string>
+    <string name="buttonUpdate">Update</string>
+    <string name="buttonClear">Clear</string>
+    <string name="buttonDelete">Delete</string>
+</resources>
