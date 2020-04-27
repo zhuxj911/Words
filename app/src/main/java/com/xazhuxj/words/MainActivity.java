@@ -2,7 +2,8 @@ package com.xazhuxj.words;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
+//import androidx.lifecycle.ViewModelProviders; //不再使用
 
 import android.os.Bundle;
 import android.view.View;
@@ -22,12 +23,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textView = findViewById(R.id.textView);
-        wordViewModel = ViewModelProviders.of(this).get(WordViewModel.class);
+//        wordViewModel = ViewModelProviders.of(this).get(WordViewModel.class); //不再使用
+        wordViewModel = new ViewModelProvider(this).get(WordViewModel.class);
         wordViewModel.getAllWords().observe(this, new Observer<List<Word>>() {
             @Override
             public void onChanged(List<Word> words) {
                 StringBuilder text = new StringBuilder();
-                for (int i=0; i<words.size(); i++){
+                for (int i = 0; i < words.size(); i++) {
                     Word word = words.get(i);
                     text.append(word.getId()).append(":").append(word.getWord()).append("=").append(word.getChineseMeaning() + "\n");
                 }
