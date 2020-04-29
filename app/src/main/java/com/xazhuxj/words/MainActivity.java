@@ -26,9 +26,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        wordViewModel = new ViewModelProvider(this).get(WordViewModel.class);
+
         aSwitch = findViewById(R.id.switch1);
-        cellNormalAdapter = new CellAdapter(false);
-        cellCardAdapter = new CellAdapter(true);
+        cellNormalAdapter = new CellAdapter(false, wordViewModel);
+        cellCardAdapter = new CellAdapter(true, wordViewModel);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -42,14 +45,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        wordViewModel = new ViewModelProvider(this).get(WordViewModel.class);
+
         wordViewModel.getAllWords().observe(this, new Observer<List<Word>>() {
             @Override
             public void onChanged(List<Word> words) {
+                int temp = cellCardAdapter.getItemCount();
                 cellNormalAdapter.setAllWords(words);
                 cellNormalAdapter.notifyDataSetChanged();
-                cellCardAdapter.setAllWords(words);
-                cellCardAdapter.notifyDataSetChanged();
+                if(temp != words.size()) {
+                    cellCardAdapter.setAllWords(words);
+                    cellCardAdapter.notifyDataSetChanged();
+                }
             }
         });
 
