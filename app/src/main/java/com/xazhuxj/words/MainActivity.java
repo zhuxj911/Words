@@ -3,10 +3,14 @@ package com.xazhuxj.words;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -15,94 +19,28 @@ import android.widget.Switch;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    WordViewModel wordViewModel;
-    RecyclerView recyclerView;
-    CellAdapter cellNormalAdapter, cellCardAdapter;
-    Switch aSwitch;
 
-    private Button buttonInsert, buttonClear;
-
+    private NavController navController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        wordViewModel = new ViewModelProvider(this).get(WordViewModel.class);
-
-        aSwitch = findViewById(R.id.switch1);
-        cellNormalAdapter = new CellAdapter(false, wordViewModel);
-        cellCardAdapter = new CellAdapter(true, wordViewModel);
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        recyclerView.setAdapter(cellNormalAdapter);
-        aSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(isChecked){
-                recyclerView.setAdapter(cellCardAdapter);
-            }else {
-                recyclerView.setAdapter(cellNormalAdapter);
-            }
-        });
+        navController = Navigation.findNavController(findViewById(R.id.fragment));
+        NavigationUI.setupActionBarWithNavController(this, navController);
+    }
 
 
 
-        wordViewModel.getAllWords().observe(this, new Observer<List<Word>>() {
-            @Override
-            public void onChanged(List<Word> words) {
-                int temp = cellCardAdapter.getItemCount();
-                cellNormalAdapter.setAllWords(words);
-                cellNormalAdapter.notifyDataSetChanged();
-                if(temp != words.size()) {
-                    cellCardAdapter.setAllWords(words);
-                    cellCardAdapter.notifyDataSetChanged();
-                }
-            }
-        });
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        navController.navigateUp();
+    }
 
-        buttonInsert = findViewById(R.id.buttonInsert);
-        buttonInsert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String[] english = {
-                        "Hello",
-                        "World",
-                        "Android",
-                        "Google",
-                        "Studio",
-                        "Project",
-                        "Database",
-                        "Recycler",
-                        "View",
-                        "String",
-                        "Value",
-                        "Integer"
-                };
-                String[] chinese = {
-                        "你好",
-                        "世界",
-                        "安卓系统",
-                        "谷歌公司",
-                        "工作室",
-                        "项目",
-                        "数据库",
-                        "回收站",
-                        "视图",
-                        "字符串",
-                        "价值",
-                        "整数类型"
-                };
-                for(int i=0; i < english.length; i++) {
-                    wordViewModel.insertWords(new Word(english[i], chinese[i]));
-                }
-            }
-        });
-
-        buttonClear = findViewById(R.id.buttonClear);
-        buttonClear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                wordViewModel.deleteAllWords();
-            }
-        });
+    @Override
+    public boolean onSupportNavigateUp() {
+        navController.navigateUp();
+        return super.onSupportNavigateUp();
     }
 }
