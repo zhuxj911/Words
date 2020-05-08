@@ -10,24 +10,33 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CellAdapter extends RecyclerView.Adapter<CellAdapter.CellViewHolder> {
+public class CellAdapter extends ListAdapter<Word, CellAdapter.CellViewHolder> {
     boolean useCardView;
     WordViewModel wordViewModel;
 
     public CellAdapter(boolean useCardView, WordViewModel wordViewModel) {
+        super(new DiffUtil.ItemCallback<Word>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull Word oldItem, @NonNull Word newItem) {
+                return oldItem.getId() == newItem.getId();
+            }
+
+            @Override
+            public boolean areContentsTheSame(@NonNull Word oldItem, @NonNull Word newItem) {
+                return (oldItem.getWord().equals(newItem.getWord())
+                && oldItem.getChineseMeaning().equals(newItem.getChineseMeaning())
+                && oldItem.isChineseInvisible() == newItem.isChineseInvisible());
+            }
+        });
         this.useCardView = useCardView;
         this.wordViewModel = wordViewModel;
-    }
-
-    List<Word> allWords = new ArrayList<>();
-
-    public void setAllWords(List<Word> allWords) {
-        this.allWords = allWords;
     }
 
     @NonNull
@@ -72,7 +81,7 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.CellViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull CellViewHolder holder, int position) {
-        final Word word = allWords.get(position);
+        final Word word = getItem(position);
         holder.itemView.setTag(R.id.word_for_view_holder, word);
         holder.textViewNumber.setText(String.valueOf(position+1));
         holder.textViewEnglish.setText(word.getWord());
@@ -88,8 +97,9 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.CellViewHolder
     }
 
     @Override
-    public int getItemCount() {
-        return allWords.size();
+    public void onViewAttachedToWindow(@NonNull CellViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        holder.textViewNumber.setText(String.valueOf(holder.getAdapterPosition()+1));
     }
 
     class CellViewHolder extends RecyclerView.ViewHolder {

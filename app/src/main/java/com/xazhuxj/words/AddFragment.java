@@ -86,6 +86,9 @@ public class AddFragment extends Fragment {
                 viewModel.insertWords(word);
                 NavController navController = Navigation.findNavController(v);
                 navController.navigateUp();
+
+                InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
             }
         });
     }
